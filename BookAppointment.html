@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Appointment Booking</title>
+<style>
+    /* Your CSS styles here */
+</style>
+</head>
+<body>
+
+<div class="container">
+    <form id="appointmentForm">
+        <div class="form-group">
+            <label for="patientName">Patient Name:</label>
+            <input type="text" id="patientName" name="patientName" placeholder="Enter patient name" required>
+        </div>
+        <div class="form-group">
+            <label for="age">Age:</label>
+            <input type="text" id="age" name="age" placeholder="Enter age" required>
+        </div>
+        <div class="form-group">
+            <label for="appointmentDate">Appointment Date:</label>
+            <input type="date" id="appointmentDate" name="appointmentDate" required>
+        </div>
+        <input type="submit" value="Book Appointment">
+    </form>
+</div>
+
+<script>
+    document.getElementById("appointmentForm").addEventListener("submit", function(event) {
+        event.preventDefault(); // Prevent the default form submission
+        var patientName = document.getElementById('patientName').value;
+        var age = document.getElementById('age').value;
+        var appointmentDate = document.getElementById('appointmentDate').value;
+
+        // Send data to server-side script
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", "save_data.php", true);
+        xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState === 4 && xhr.status === 200) {
+                // Handle server response if needed
+                console.log(xhr.responseText);
+            }
+        };
+        console.log("Patient Name:", patientName);
+console.log("Age:", age);
+console.log("Appointment Date:", appointmentDate);
+
+        xhr.send("patientName=" + encodeURIComponent(patientName) + "&age=" + encodeURIComponent(age) + "&appointmentDate=" + encodeURIComponent(appointmentDate));
+
+
+    });
+</script>
+
+</body>
+</html>

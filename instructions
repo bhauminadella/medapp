@@ -1,0 +1,12 @@
+
+
+ Node.js v20.11.1 to /usr/local/bin/node
+	•	npm v10.2.4 to /usr/local/bin/npm
+
+
+npx http-server
+
+^C
+(base) hnadella@hnadella-mac APP % pwd
+/Users/hnadella/Documents/BHAUMI-WORK/APP
+(base) hnadella@hnadella-mac APP % node server.js

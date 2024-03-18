@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Save Data</title>
+    <style>
+        /* Center the form and its contents */
+        body {
+            background-color: lightgrey;
+            color: white;
+            text-align: center; /* Center align the contents */
+        }
+
+        .sidenav {
+        height: 100%;
+        width: 150px; /* Adjust width if needed */
+        position: fixed;
+        top: 0;
+        left: 0;
+        background-color: #333;
+        padding-top: 20px;
+    }
+    .sidenav a {
+        padding: 10px 20px;
+        text-decoration: none;
+        font-size: 18px;
+        color: #fff;
+        display: block;
+    }
+    .sidenav a:hover {
+        background-color: #555;
+    }
+    .content {
+        margin-left: 150px; /* Adjust margin to match side menu width */
+        padding: 20px;
+    }
+        /* Form container */
+        #dataForm {
+            display: inline-block; /* Ensure the form is not full width */
+            width: 300px; /* Set the width of the form */
+            margin: 0 auto; /* Center the form horizontally */
+        }
+
+        /* Container for each parameter */
+        .input-container {
+            margin-bottom: 10px; /* Add some spacing between containers */
+            text-align: left; /* Left align the contents */
+        }
+
+        /* Label styles */
+        label {
+            display: inline-block;
+            width: 150px; /* Set the width of the labels */
+            text-align: left; /* Align labels to the right */
+        }
+
+        /* Input styles */
+        input[type="text"], input[type="date"], input[type="time"] {
+            width: calc(100% - 160px); /* Set the width of the input fields */
+            margin-left: 10px; /* Add some spacing between label and input */
+        }
+
+        /* Submit button styles */
+        button {
+            width: 50%; /* Set the width of the submit button */
+        }
+    </style>
+</head>
+<body>
+
+        <!-- Placeholder for displaying doctor list -->
+    <div id="doctorList"></div>
+     <div id="patientcount" class="center"> </div>
+    <div id="appointmentDataContainer"></div>
+
+
+          <div class="sidenav">
+        <a href="#doctors" id="doctoravail">Doctors Availability</a>
+        <a href="#appointment" id="bookAppointment">Book Appointment</a>
+        <a href="#patientlist" id="patientlist">Todays Patients list</a>
+        </div>
+
+
+        <div class="content">
+            <!-- Content goes here -->
+            <h2>Welcome to Our Clinic</h2>
+             <p>This is the main content area where you can display information about doctors availability and booking appointments.</p> 
+        </div>
+
+
+
+  
+      
+<script>
+
+function clearContent() {
+    // Clear the content of the right-side container
+    
+            document.getElementById('doctorList').innerHTML = '';
+            document.getElementById('patientcount').innerHTML = '';
+            document.querySelector(".content").innerHTML = '';
+            document.getElementById('appointmentDataContainer').innerHTML = '';
+}
+
+
+// Method to invoke when Doctors availbility is clicked 
+
+    document.getElementById("doctoravail").addEventListener("click", function(event) {
+    event.preventDefault(); // Prevent default link behavior
+   
+ // Call clearContent function
+            clearContent();
+ 
+    // Fetch doctors.txt file
+    fetch('doctors.txt')
+        .then(response => response.text())
+        .then(data => {
+            // Split the data into an array of lines
+            const doctors = data.split('\n');
+            
+            // Create an ordered list element
+            const list = document.createElement('ol');
+
+            // Loop through each doctor and create list items
+            doctors.forEach(doctor => {
+                const listItem = document.createElement('li');
+                listItem.textContent = doctor;
+                list.appendChild(listItem);
+            });
+
+            // Append the ordered list to the doctorList div
+            document.getElementById('doctorList').appendChild(list);
+
+        })
+        .catch(error => {
+            console.error('Error fetching doctors.txt:', error);
+        });
+
+});
+
+
+
+
+
+//Method to invoke when book appointment is clicked
+
+
+    document.getElementById("bookAppointment").addEventListener("click", function(event) {
+        event.preventDefault(); // Prevent default link behavior
+       clearContent(); // Clear previous content
+        document.querySelector(".content").innerHTML = `
+        
+
+            <form id="dataForm">
+
+             <h2>Book Appointment</h2>
+                <!-- Container for Patient Name -->
+                <div class="input-container">
+                    <label for="patientName">Patient Name:</label>
+                    <input type="text" id="patientName" name="patientName" maxlength="50" pattern="[A-Za-z ]+" title="Please enter only text for patient name" required>
+                </div>
+
+                <!-- Container for Age -->
+                <div class="input-container">
+                    <label for="age">Age:</label>
+                    <input type="text" id="age" name="age" pattern="[0-9]*" title="Please enter only numeric values for age" required>
+                </div>
+
+                <!-- Container for Appointment Date and Time -->
+                <div class="input-container">
+                    <label for="appointmentDateTime">Appointment Date and Time:</label><br>
+                    <input type="date" id="appointmentDate" name="appointmentDate"> <!-- Date -->
+                    <input type="time" id="appointmentTime" name="appointmentTime"> <!-- Time -->
+                </div>
+
+                <button type="submit">Submit</button>
+            </form>
+        `;
+
+        // Get the current date and time in YYYY-MM-DDThh:mm format
+        var currentDateTime = new Date().toISOString().split('.')[0];
+
+        // Set the minimum attribute of the date input field to the current date
+        document.getElementById('appointmentDate').min = currentDateTime.split('T')[0];
+        // Set the minimum attribute of the time input field to the current time
+        document.getElementById('appointmentTime').min = currentDateTime.split('T')[1];
+   
+
+
+
+
+        document.getElementById('dataForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const formData = new FormData(this);
+            const xhr = new XMLHttpRequest();
+            xhr.open('POST', '/saveData', true);
+            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === XMLHttpRequest.DONE) {
+                    if (xhr.status === 200) {
+                        console.log('Request successful');
+                        console.log(xhr.responseText); // Log the response from the server
+                    } else {
+                        console.error('data not saved ');
+
+                    }
+                }
+            };
+            xhr.open('POST', 'http://localhost:3000/saveData', true);
+            xhr.send(new URLSearchParams(formData).toString());
+        });
+
+     });
+
+
+ </script>
+
+ <!-- Include displayAppointments.js -->
+    <script src="displayAppointments.js"></script>
+
+    <script>
+        // Event listener for patient list link
+        document.getElementById("patientlist").addEventListener("click", function(event) {
+            event.preventDefault(); // Prevent default link behavior
+
+             clearContent(); // Clear previous content
+
+            // Call the function to display appointments
+            displayAppointments();
+        });
+    </script>
+
+
+
+</body>
+</html>

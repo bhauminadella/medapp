@@ -1,0 +1,9 @@
+/* Example CSS styles */
+body {
+    font-family: Arial, sans-serif;
+}
+
+form {
+    max-width: 400px;
+    margin: 0 auto;
+}

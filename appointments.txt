@@ -1,0 +1,7 @@
+Patient Name: bindu
+Age: 33
+Appointment Date: 2024-03-14
+
+Patient Name: Sripad
+Age: 34
+Appointment Date: 2024-03-14
